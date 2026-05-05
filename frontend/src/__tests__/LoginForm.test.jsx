@@ -14,6 +14,7 @@ vi.mock('react-router-dom', async () => {
 
 describe('LoginForm', () => {
   const mockLogin = vi.fn()
+  const passwordLabel = /l.senord/i
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -37,7 +38,7 @@ describe('LoginForm', () => {
   it('renders email and password fields with a submit button', () => {
     renderForm()
     expect(screen.getByLabelText(/e-post/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/lösenord/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(passwordLabel)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /logga in/i })).toBeInTheDocument()
   })
 
@@ -50,7 +51,7 @@ describe('LoginForm', () => {
     fireEvent.change(screen.getByLabelText(/e-post/i), {
       target: { value: 'bad@test.se' },
     })
-    fireEvent.change(screen.getByLabelText(/lösenord/i), {
+    fireEvent.change(screen.getByLabelText(passwordLabel), {
       target: { value: 'wrongpass' },
     })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
@@ -66,6 +67,12 @@ describe('LoginForm', () => {
     mockLogin.mockRejectedValue(new Error('Network error'))
 
     renderForm()
+    fireEvent.change(screen.getByLabelText(/e-post/i), {
+      target: { value: 'user@test.se' },
+    })
+    fireEvent.change(screen.getByLabelText(passwordLabel), {
+      target: { value: 'wrongpass' },
+    })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
 
     await waitFor(() => {
@@ -84,7 +91,7 @@ describe('LoginForm', () => {
     fireEvent.change(screen.getByLabelText(/e-post/i), {
       target: { value: 'user@test.se' },
     })
-    fireEvent.change(screen.getByLabelText(/lösenord/i), {
+    fireEvent.change(screen.getByLabelText(passwordLabel), {
       target: { value: 'correct123' },
     })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
@@ -100,6 +107,12 @@ describe('LoginForm', () => {
     )
 
     renderForm()
+    fireEvent.change(screen.getByLabelText(/e-post/i), {
+      target: { value: 'user@test.se' },
+    })
+    fireEvent.change(screen.getByLabelText(passwordLabel), {
+      target: { value: 'correct123' },
+    })
     fireEvent.click(screen.getByRole('button', { name: /logga in/i }))
 
     expect(screen.getByRole('button', { name: /loggar in/i })).toBeDisabled()

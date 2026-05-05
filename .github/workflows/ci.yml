@@ -20,13 +20,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Make mvnw executable
-        working-directory: backend
-        run: chmod +x mvnw
-
       - name: Run backend tests
         working-directory: backend
-        run: ./mvnw test -q
+        run: mvn test -q
 
   frontend-test:
     name: Frontend Tests
