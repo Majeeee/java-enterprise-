@@ -4,12 +4,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.scb.dto.AuthResponse;
 import se.scb.dto.LoginRequest;
 import se.scb.dto.RegisterRequest;
 import se.scb.service.AuthService;
 
+@Validated
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

@@ -7,6 +7,7 @@ import se.scb.model.Migration;
 import se.scb.repository.MigrationRepository;
 import se.scb.repository.MigrationSpecification;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -34,10 +35,24 @@ public class MigrationService {
     }
 
     public List<String> getAllAgeGroups() {
-        return migrationRepository.findDistinctAgeGroups();
+        return migrationRepository.findDistinctAgeGroups()
+                .stream()
+                .sorted(Comparator.comparingInt(this::ageGroupSortValue))
+                .toList();
     }
 
     public List<Integer> getAllYears() {
         return migrationRepository.findDistinctYears();
+    }
+
+    private int ageGroupSortValue(String ageGroup) {
+        if ("100+".equals(ageGroup)) {
+            return 100;
+        }
+        int dashIndex = ageGroup.indexOf('-');
+        if (dashIndex > 0) {
+            return Integer.parseInt(ageGroup.substring(0, dashIndex));
+        }
+        return Integer.MAX_VALUE;
     }
 }

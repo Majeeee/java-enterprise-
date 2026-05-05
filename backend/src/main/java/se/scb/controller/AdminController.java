@@ -2,12 +2,14 @@ package se.scb.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.scb.dto.UserResponse;
 import se.scb.service.AdminService;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")

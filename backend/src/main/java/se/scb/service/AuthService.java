@@ -4,14 +4,16 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import se.scb.dto.*;
+import se.scb.dto.AuthResponse;
+import se.scb.dto.LoginRequest;
+import se.scb.dto.RegisterRequest;
 import se.scb.exception.EmailAlreadyExistsException;
 import se.scb.model.User;
 import se.scb.repository.UserRepository;
@@ -25,16 +27,13 @@ public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
     private final EmailPublisher emailPublisher;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil, AuthenticationManager authenticationManager,
-                       EmailPublisher emailPublisher) {
+                       JwtUtil jwtUtil, EmailPublisher emailPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
         this.emailPublisher = emailPublisher;
     }
 
@@ -64,18 +63,22 @@ public class AuthService implements UserDetailsService {
     }
 
     public AuthResponse login(LoginRequest request, HttpServletResponse response) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Användare hittades inte"));
+                .orElseThrow(() -> new BadCredentialsException("Felaktig e-post eller lösenord"));
+
+        if (!user.isEnabled()) {
+            throw new DisabledException("Kontot är inte aktiverat än. Kontakta en administratör.");
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Felaktig e-post eller lösenord");
+        }
 
         String token = jwtUtil.generateToken(user);
 
         Cookie cookie = new Cookie("jwt", token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Sätt true i produktion med HTTPS
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(86400);
         response.addCookie(cookie);

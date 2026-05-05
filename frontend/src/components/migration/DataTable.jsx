@@ -1,19 +1,7 @@
-export default function DataTable({ data, loading }) {
-  if (loading) {
-    return <div className="loading-state">Hämtar data...</div>
-  }
-
-  if (!data || data.length === 0) {
-    return (
-      <div className="empty-state">
-        <p>Inga resultat hittades. Prova att justera filtren.</p>
-      </div>
-    )
-  }
-
+export default function DataTable({ data }) {
   return (
     <div className="table-wrapper">
-      <p className="table-count">{data.length} rader</p>
+      <p className="table-count">{data.length.toLocaleString('sv-SE')} rader</p>
       <div className="table-scroll">
         <table className="data-table">
           <thead>

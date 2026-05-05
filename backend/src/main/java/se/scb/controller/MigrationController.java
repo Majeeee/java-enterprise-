@@ -2,6 +2,7 @@ package se.scb.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.scb.dto.MigrationResponse;
 import se.scb.service.MigrationService;
@@ -9,6 +10,7 @@ import se.scb.service.MigrationService;
 import java.util.List;
 import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/api/migrations")
 public class MigrationController {

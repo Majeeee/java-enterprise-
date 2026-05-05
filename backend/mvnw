@@ -1,0 +1,24 @@
+#!/bin/sh
+# Maven Wrapper script for Unix/macOS
+set -e
+
+MAVEN_WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+MAVEN_WRAPPER_PROPERTIES=".mvn/wrapper/maven-wrapper.properties"
+
+if [ -r "$MAVEN_WRAPPER_PROPERTIES" ]; then
+    WRAPPER_URL=$(grep 'wrapperUrl' "$MAVEN_WRAPPER_PROPERTIES" | cut -d'=' -f2-)
+fi
+
+if [ ! -f "$MAVEN_WRAPPER_JAR" ]; then
+    echo "Downloading maven-wrapper.jar..."
+    if command -v curl > /dev/null; then
+        curl -fsSL -o "$MAVEN_WRAPPER_JAR" "$WRAPPER_URL"
+    elif command -v wget > /dev/null; then
+        wget -q -O "$MAVEN_WRAPPER_JAR" "$WRAPPER_URL"
+    else
+        echo "ERROR: curl or wget required to download maven-wrapper.jar" >&2
+        exit 1
+    fi
+fi
+
+exec java -jar "$MAVEN_WRAPPER_JAR" "$@"
