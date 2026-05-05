@@ -1,0 +1,31 @@
+# Java / Maven
+target/
+*.jar
+*.class
+.mvn/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Node / React
+node_modules/
+dist/
+.cache/
+
+# Miljövariabler
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Loggar
+*.log
+logs/

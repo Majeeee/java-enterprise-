@@ -1,0 +1,17 @@
+import api from './api'
+
+export const authService = {
+  async register(data) {
+    const response = await api.post('/auth/register', data)
+    return response.data
+  },
+
+  async login(email, password) {
+    const response = await api.post('/auth/login', { email, password })
+    return response.data
+  },
+
+  async logout() {
+    await api.post('/auth/logout')
+  }
+}
